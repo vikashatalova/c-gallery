@@ -269,6 +269,12 @@ button:hover {
   font-weight: 600;
 }
 
+#uploaded-photo {
+  width: 440px;
+  height: 440px;
+  object-fit: cover;
+}
+
 .modal__header {
   border-bottom: 1px solid var(--light-border);
   padding: 20px;
