@@ -51,7 +51,7 @@ https://c-gallery.polinashneider.space/swagger/
 
 Слева у каждого адреса написан тип запроса. GET и POST тебе уже известны, а вот с PATCH, PUT и DELETE только предстоит еще познакомиться.
 
-Здесь указаны лишь относительные адреса. Полный адрес для /posts/ будет
+Здесь указаны лишь относительные адреса. Полный адрес для **/posts/** \*/ будет
 
 ```
 https://c-gallery.polinashneider.space/api/v1/posts/
