@@ -32,7 +32,7 @@
 
 При клике на кнопку «Опубликовать» (`#post-publish`) отправляется POST-запрос на сервер по адресу `'https://c-gallery.polinashneider.space/api/v1/posts/'`.
 
-Так как среди отправляемых данных будет картинка, используй формат [FormData](https://developer.mozilla.org/en-US/docs/Web/API/FormData).
+Так как среди отправляемых данных будет картинка, используй [FormData](https://developer.mozilla.org/en-US/docs/Web/API/FormData).
 
 Формат запроса посмотри в [Swagger](https://c-gallery.polinashneider.space/swagger/). Тебя интересует /posts/ (соответственно, метод POST).
 
