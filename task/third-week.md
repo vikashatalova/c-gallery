@@ -47,7 +47,10 @@ https://c-gallery.polinashneider.space/api/v1/posts/<id_поста>/like/
 После отправки комментария текстовое поле должно очищаться.
 
 Для сохранения комментария на бэкенде должен отправляться POST-запрос, содержащий в теле текст комментария и id поста, по адресу
-`https://c-gallery.polinashneider.space/api/v1/comments/`
+
+```
+https://c-gallery.polinashneider.space/api/v1/comments/
+```
 
 Формат запроса:
 
@@ -88,7 +91,6 @@ https://c-gallery.polinashneider.space/api/v1/users/me/
 
 ```
 https://c-gallery.polinashneider.space/api/v1/users/me/
-
 ```
 
 Так как запрос будет содержать картинку, используй FormData.

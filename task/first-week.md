@@ -34,7 +34,6 @@
 
 ```
 https://c-gallery.polinashneider.space/api/v1/posts/
-
 ```
 
 Так как среди отправляемых данных будет картинка, используй [FormData](https://developer.mozilla.org/en-US/docs/Web/API/FormData).
