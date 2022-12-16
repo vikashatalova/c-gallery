@@ -207,7 +207,7 @@
               <label for="file-upload" class="add-post-modal__upload-photo">
                 Добавить фото
               </label>
-              <input id="file-upload" type="file"></button>
+              <input id="file-upload" type="file" accept="image/*"></button>
             </div>
           </div>
           <div class="add-post-modal__step-2 hidden">
@@ -215,7 +215,8 @@
               <img src="./assets/avatar-small.svg" alt="codegirl_school" />
               <span>codegirl_school</span>
             </div>
-            <img id="uploaded-photo" width="440" src="./img/photo-post.jpg" alt="" />
+            <!-- <img id="uploaded-photo" width="440" src="./img/photo-post.jpg" alt="" /> -->
+            <img id="uploaded-photo" width="440" src="" alt="" />
             <div class="add-post-modal__inputs-wrapper">
               <div class="add-post-modal__post-text">
                 <textarea
@@ -364,7 +365,7 @@
     </div>
     <!-- Alert notifications start -->
     <template id="alert-success">
-      <div class="alert alert--success">
+      <div id="alert-message" class="alert alert--success">
         <div class="alert__ellipsis"></div>
         <div class="alert__icon">
           <i class="fa fa-check fa-3x"></i>
@@ -376,7 +377,7 @@
       </div>
     </template>
     <template id="alert-fail">
-      <div class="alert alert--error hidden">
+      <div id="alert-message" class="alert alert--error hidden">
         <div class="alert__ellipsis"></div>
         <div class="alert__icon">
           <i class="fa fa-circle-xmark fa-3x"></i>
@@ -409,5 +410,6 @@
     </template>
     <!-- Grid post template end -->
     <script type="module" src="scripts/main.js"></script>
+    <script src="scripts/addPhoto.js"></script>
   </body>
 </html>
