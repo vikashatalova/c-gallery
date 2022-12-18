@@ -47,22 +47,20 @@ uploadPhoto();
 
 function showMessage () {
     const successMessage = document.querySelector('#alert-success');
-    const clon = successMessage.content.cloneNode(true);
+    const clon = successMessage.content.firstElementChild.cloneNode(true);
     document.body.appendChild(clon);
 
     setTimeout(() => {
-        const clon = document.querySelector('#alert-message');
         clon.remove();
     }, 2000);
 };
 
 function errorMessage () {
     const errorMessage = document.querySelector('#alert-fail');
-    const clon = errorMessage.content.cloneNode(true);
+    const clon = errorMessage.content.firstElementChild.cloneNode(true);
     document.body.appendChild(clon);
 
     setTimeout(() => {
-        const clon = document.querySelector('#alert-message');
         clon.remove();
     }, 2000);
 }
@@ -97,6 +95,10 @@ postPublishButton.addEventListener('click', () => {
     })
     .then((res) => {
         if (res.ok) {
+            addPostModal.classList.remove('active');
+            bodyOverlay.classList.remove('active');
+            document.body.classList.remove('with-overlay');
+
             showMessage();
         }
     })
