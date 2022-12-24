@@ -42,7 +42,7 @@
       <main class="photos">
         <div class="photos__info">
           <span class="photos__info-title">Фото</span>
-          <span><span id="photo-count">0</span> публикаций</span>
+          <span><span id="photo-count"></span> публикаций</span>
         </div>
         <div class="empty-content photos__empty-content hidden">
           <img class="empty-content__placeholder" src="./assets/photos.svg" />
@@ -53,141 +53,7 @@
           </button>
         </div>
         <div class="photos__content">
-          <div class="post">
-            <img src="./img/post-1.jpg" alt="" />
-            <div class="overlay">
-              <div class="overlay__content">
-                <div>
-                  <i class="fa fa-heart"></i>
-                  <span>0</span>
-                </div>
-                <div>
-                  <i class="fa fa-comment"></i>
-                  <span>0</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="post">
-            <img src="./img/post-2.jpg" alt="" />
-            <div class="overlay">
-              <div class="overlay__content">
-                <div>
-                  <i class="fa fa-heart"></i>
-                  <span>0</span>
-                </div>
-                <div>
-                  <i class="fa fa-comment"></i>
-                  <span>0</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="post">
-            <img src="./img/post-3.jpg" alt="" />
-            <div class="overlay">
-              <div class="overlay__content">
-                <div>
-                  <i class="fa fa-heart"></i>
-                  <span>0</span>
-                </div>
-                <div>
-                  <i class="fa fa-comment"></i>
-                  <span>0</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="post">
-            <img src="./img/post-4.jpg" alt="" />
-            <div class="overlay">
-              <div class="overlay__content">
-                <div>
-                  <i class="fa fa-heart"></i>
-                  <span>0</span>
-                </div>
-                <div>
-                  <i class="fa fa-comment"></i>
-                  <span>0</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="post">
-            <img src="./img/post-5.jpg" alt="" />
-            <div class="overlay">
-              <div class="overlay__content">
-                <div>
-                  <i class="fa fa-heart"></i>
-                  <span>0</span>
-                </div>
-                <div>
-                  <i class="fa fa-comment"></i>
-                  <span>0</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="post">
-            <img src="./img/post-6.jpg" alt="" />
-            <div class="overlay">
-              <div class="overlay__content">
-                <div>
-                  <i class="fa fa-heart"></i>
-                  <span>0</span>
-                </div>
-                <div>
-                  <i class="fa fa-comment"></i>
-                  <span>0</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="post">
-            <img src="./img/post-7.jpg" alt="" />
-            <div class="overlay">
-              <div class="overlay__content">
-                <div>
-                  <i class="fa fa-heart"></i>
-                  <span>0</span>
-                </div>
-                <div>
-                  <i class="fa fa-comment"></i>
-                  <span>0</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="post">
-            <img src="./img/post-8.jpg" alt="" />
-            <div class="overlay">
-              <div class="overlay__content">
-                <div>
-                  <i class="fa fa-heart"></i>
-                  <span>0</span>
-                </div>
-                <div>
-                  <i class="fa fa-comment"></i>
-                  <span>0</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="post">
-            <img src="./img/post-9.jpg" alt="" />
-            <div class="overlay">
-              <div class="overlay__content">
-                <div>
-                  <i class="fa fa-heart"></i>
-                  <span>0</span>
-                </div>
-                <div>
-                  <i class="fa fa-comment"></i>
-                  <span>0</span>
-                </div>
-              </div>
-            </div>
-          </div>
+          
         </div>
       </main>
       <footer class="footer">© 2022 codegirl_school</footer>
@@ -300,13 +166,13 @@
             <img src="./assets/avatar-small.svg" alt="codegirl_school" />
             <div>
               <span>codegirl_school</span>
-              <span class="account-info__time">15 октября</span>
+              <span class="account-info__time"></span>
             </div>
           </div>
           <button type="button" id="delete-post" class="delete-post-button">Удалить</button>
         </div>
         <div class="modal__content">
-          <img id="post-photo" width="440" src="./img/photo-post.jpg" alt="" />
+          <img id="post-photo" width="440" src="" alt="" />
           <div class="statistics">
             <span class="statistics__likes">
               <i class="fa fa-heart"></i>
@@ -317,15 +183,10 @@
               <span>0</span>
             </span>
           </div>
-          <p class="post-text">
-            Неожиданный вопрос, правда? Кажется, что HTML и CSS — инструмент
-            разработчиков и верстальщиков. Но на самом деле есть и другие
-            профессии, которым приходится иметь дело с кодом 👌.
-          </p>
+          <p class="post-text"></p>
           <p class="post-hashtags">
-            <a href="#">#itaкурсы</a>
-            <a href="#">#сменитьпрофессию</a> <a href="#">#новаяпрофессия</a>
-            <a href="#">#itпрофессии</a> <a href="#">#itпрофессии</a>
+            <!-- <a href="#">#itaкурсы</a> -->
+            <a href="#"></a>
           </p>
           <div class="comments">
             <div class="comments__content">
@@ -392,24 +253,20 @@
 
     <!-- Grid post template start -->
     <template id="post-template">
-      <div class="post">
-        <img src="" />
-        <div class="overlay">
-          <div class="overlay__content">
-            <div class="likes">
-              <i class="fa fa-heart"></i>
-              <span>0</span>
-            </div>
-            <div class="comments">
-              <i class="fa fa-comment"></i>
-              <span>0</span>
-            </div>
+      <div class="overlay">
+        <div class="overlay__content">
+          <div class="likes">
+            <i class="fa fa-heart"></i>
+            <span>0</span>
+          </div>
+          <div class="comments">
+            <i class="fa fa-comment"></i>
+            <span>0</span>
           </div>
         </div>
       </div>
     </template>
     <!-- Grid post template end -->
     <script type="module" src="scripts/main.js"></script>
-    <script src="scripts/addPhoto.js"></script>
   </body>
 </html>
