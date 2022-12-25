@@ -8,7 +8,6 @@
 
 ```
 https://c-gallery.polinashneider.space/api/v1/users/me/posts
-
 ```
 
 Формат ответа ты можешь посмотреть в [Swagger](https://c-gallery.polinashneider.space/swagger/).
