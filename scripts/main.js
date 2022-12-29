@@ -2,6 +2,7 @@ import { showMessage, createElement } from "./utils.js";
 import { POST_URL, AUTH_TOKEN, POSTS_URL } from "./variables.js";
 
 const addPhoto = document.querySelector('#add-photo');
+const addFirstPost = document.querySelector('#add-first-post');
 const addPostModal = document.querySelector('.add-post-modal'); 
 const addPostModalStepOne = document.querySelector('.add-post-modal__step-1'); 
 const addPostModalStepTwo = document.querySelector('.add-post-modal__step-2'); 
@@ -10,8 +11,16 @@ const bodyOverlay = document.querySelector('.body-overlay');
 const postPublishButton = document.querySelector('#post-publish');
 const fileUpload = document.querySelector('#file-upload');
 const image = document.querySelector('#uploaded-photo');
+const photosContent = document.querySelector('.photos__content');
+const previewPostModal = document.querySelector('.preview-post-modal');
 
 addPhoto.addEventListener('click', () => {
+    addPostModal.classList.add('active');
+    document.body.classList.add('with-overlay');
+    bodyOverlay.classList.add('active');
+});
+
+addFirstPost.addEventListener('click', () => {
     addPostModal.classList.add('active');
     document.body.classList.add('with-overlay');
     bodyOverlay.classList.add('active');
@@ -30,15 +39,9 @@ const uploadPhoto = () => {
         image.src = URL.createObjectURL(fileUpload.files[0]);
         image.style.display = "block";
 
-        if (fileUpload) {
-            console.log(fileUpload);
-            addPostModalStepOne.classList.add('hidden');
-            addPostModalStepTwo.classList.remove('hidden');
-            addPostModalStepTwo.classList.add('active');
-            modalFooter.classList.remove('hidden');
-        } else {
-            showMessage('#alert-fail')
-        }
+        addPostModalStepOne.classList.add('hidden');
+        addPostModalStepTwo.classList.remove('hidden');
+        modalFooter.classList.remove('hidden');
     });
 
 };
@@ -59,7 +62,6 @@ postPublishButton.addEventListener('click', () => {
     const inputsAddPublish = document.querySelectorAll('textarea');
 
     for (let i = 0;  i < inputsAddPublish.length; i++) {
-        inputsAddPublish[i].value = '';
         fileUpload.value = "";
         postText.value = "";
         postHashtags.value = "";
@@ -115,11 +117,14 @@ const getPostUsers = () => {
         if (data) {
             photoCount.append(data.length);
             data.forEach((content) => {
-                const photosContent = document.querySelector('.photos__content');
-                const elementHTML = createElement(content.image, content.text, content.tags, content.created_at);
-                photosContent.append(elementHTML);                  
+                console.log(content);
+                const elementHTML = createElement(content);
+                photosContent.append(elementHTML);
+              
             })
-        } else {
+        }
+
+        if (data.length === 0) {
             emptyContent.classList.remove('hidden'); 
         }
     })
@@ -127,9 +132,13 @@ const getPostUsers = () => {
         showMessage('#alert-fail');
     });
 
-    return response;
+    return response
 }
 
 getPostUsers();
+
+
+
+
 
 
