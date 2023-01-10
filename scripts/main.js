@@ -1,5 +1,5 @@
 import { showMessage, createElement } from "./utils.js";
-import { POST_URL, AUTH_TOKEN, POSTS_URL } from "./variables.js";
+import { POST_URL, AUTH_TOKEN, POSTS_URL, COMMENTS_URL } from "./variables.js";
 
 const addPhoto = document.querySelector('#add-photo');
 const addFirstPost = document.querySelector('#add-first-post');
@@ -50,6 +50,25 @@ uploadPhoto();
 
 const postText = document.querySelector('#post-text');
 const postHashtags = document.querySelector('#post-hashtags');
+const textCounter = document.querySelector('.text-counter');
+
+postText.addEventListener('keydown', (e) => {
+    const textLength = e.target.value.length;
+
+    if(textLength < 2000) {
+        var sum = Number(2000) - Number(textLength);
+    } else if(textLength === 2000) {
+        var sum = 'Данные введены корректно';
+        postPublishButton.disabled = false;
+    } else {
+        var sums = Number(textLength) - 2000, 
+        sum = 'Вы вели слишком много символов введите на '+sums+'  меньше';
+        postText.style.outlineColor = 'var(--error)'
+        postPublishButton.disabled = true;
+    }
+    textCounter.textContent = sum;
+    textCounter.style.color = 'var(--error)';
+})
 
 postPublishButton.addEventListener('click', () => {
 
@@ -88,7 +107,11 @@ postPublishButton.addEventListener('click', () => {
     .catch(() => {
         showMessage('#alert-fail');
     })
-
+    .finally(() => {
+        addPostModalStepOne.classList.remove('hidden');
+        addPostModalStepTwo.classList.add('hidden');
+        modalFooter.classList.add('hidden');
+    })
     return response 
 });
 
@@ -114,15 +137,11 @@ const getPostUsers = () => {
         return response.json();
     })
     .then((data) => {
-        if (data) {
-            photoCount.append(data.length);
-            data.forEach((content) => {
-                console.log(content);
-                const elementHTML = createElement(content);
-                photosContent.append(elementHTML);
-              
-            })
-        }
+        photoCount.append(data.length);
+        data.map((content) => {  
+            const elementHTML = createElement(content);
+            photosContent.append(elementHTML);
+        })
 
         if (data.length === 0) {
             emptyContent.classList.remove('hidden'); 
@@ -130,12 +149,25 @@ const getPostUsers = () => {
     })
     .catch(() => {
         showMessage('#alert-fail');
-    });
+    })
 
     return response
 }
 
 getPostUsers();
+
+
+
+
+
+
+
+
+
+  
+
+  
+
 
 
 
