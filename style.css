@@ -70,12 +70,16 @@ body.with-overlay {
 .header__content {
   padding-top: 112px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .avatar {
   width: 173px;
   height: 173px;
   cursor: pointer;
+  border-radius: 50%;
 }
 
 .header__info span {
@@ -87,6 +91,25 @@ body.with-overlay {
   width: 460px;
   line-height: 22px;
   margin: 5px auto 0;
+}
+
+.header__info__file-upload {
+  position: relative;
+  font-size: 24px;
+  top: -25px;
+  left: 270px;
+  background: #f09476;
+  color: #232323;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+}
+
+.header__info label {
+  position: absolute;
+  top: -5px;
+  right: 2px;
+  cursor: pointer;
 }
 
 button {
@@ -350,6 +373,13 @@ input {
   color: var(--text-light);
 }
 
+.text-validate, 
+.text-validateTags {
+  font-size: 12px;
+  color: var(--text-light);
+  margin-bottom: 15px;
+}
+
 .modal__footer {
   border-top: 1px solid var(--light-border);
   padding: 20px 60px;
@@ -497,7 +527,7 @@ input {
 .comments__item {
   display: flex;
   align-items: flex-start;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 12px;
   margin-bottom: 12px;
 }
@@ -598,4 +628,61 @@ input {
   position: absolute;
   left: -49px;
   top: -23px;
+}
+
+.loader {
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  margin: 70px 0;
+}
+
+.ring {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  animation: ring 2s linear infinite;
+}
+@keyframes ring{
+  0%{
+    transform: rotate(0deg);
+    box-shadow: 1px 4px 2px #e65c00;
+  }
+  50%{
+    transform: rotate(180deg);
+    box-shadow: 1px 4px 2px #80f06f;
+  }
+  100%{
+    transform: rotate(360deg);
+    box-shadow: 1px 4px 2px #207af8;
+  }
+}
+
+.ring:before {
+  position: absolute;
+  content: '';
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  border-radius: 50%;
+  box-shadow: 0 0 5px rgba(255, 255, 255, .3);
+}
+
+.textLoader {
+  color: #232323;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.upload-photo-avatar {
+  border-radius: 100px;
+  padding: 14px 20px;
+  border: 2px solid var(--primary);
+  background-color: var(--primary);
+  color: var(--white);
+  cursor: pointer;
 }

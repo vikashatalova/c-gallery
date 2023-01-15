@@ -21,8 +21,12 @@
     <div class="container">
       <header class="header">
         <div class="header__content">
-          <img class="avatar" id="profile-avatar" src="./assets/avatar.svg" alt="codegirl_school" />
+          <img class="avatar" id="profile-avatar" src="" alt="codegirl_school" />
           <div class="header__info">
+            <div class="header__info__file-upload">
+              <label for="file-upload-avatar">+</label>
+              <input id="file-upload-avatar" type="file" accept="image/*"></button>
+            </div>
             <h2 id="account-nickname">codegirl_school</h2>
             <span id="account-name">IT-школа для девушек | WEB</span>
             <p id="description">
@@ -40,6 +44,12 @@
         </div>
       </header>
       <main class="photos">
+        <div id="loader" hidden>
+          <div class="loader">
+            <div class="ring"></div>
+            <span class="textLoader">loading</span>
+          </div>
+        </div>
         <div class="photos__info">
           <span class="photos__info-title">Фото</span>
           <span><span id="photo-count"></span> публикаций</span>
@@ -53,7 +63,7 @@
           </button>
         </div>
         <div class="photos__content">
-
+          
         </div>
       </main>
       <footer class="footer">© 2022 codegirl_school</footer>
@@ -81,7 +91,6 @@
               <img src="./assets/avatar-small.svg" alt="codegirl_school" />
               <span>codegirl_school</span>
             </div>
-            <!-- <img id="uploaded-photo" width="440" src="./img/photo-post.jpg" alt="" /> -->
             <img id="uploaded-photo" width="440" src="" alt="" />
             <div class="add-post-modal__inputs-wrapper">
               <div class="add-post-modal__post-text">
@@ -92,16 +101,17 @@
                   cols="30"
                   rows="10"
                 ></textarea>
-                <!-- <div class="text-counter">0/2000</div> -->
                 <div class="text-counter"></div>
-              </div>
-              <textarea
+                <span class="text-validate"></span> 
+                <textarea
                 name="post-hashtags"
                 id="post-hashtags"
                 cols="30"
                 rows="2"
                 placeholder="Добавить хештеги"
               ></textarea>
+              <span class="text-validateTags"></span> 
+              </div>
             </div>
           </div>
         </div>
@@ -126,7 +136,7 @@
           <div class="edit-bio-modal__fields">
             <div class="edit-bio-modal__nickname">
               <label for="nickname">Никнейм</label>
-              <input name="nickname" id="nickname" />
+              <input name="nickname" id="nickname"/>
               <div class="required-field hidden">Обязательное поле</div>
             </div>
             <div class="edit-bio-modal__name">
