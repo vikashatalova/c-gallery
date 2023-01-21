@@ -686,3 +686,7 @@ input {
   color: var(--white);
   cursor: pointer;
 }
+
+.error-validate {
+  outline-color: var(--error);
+}

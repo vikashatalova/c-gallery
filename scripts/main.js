@@ -1,5 +1,5 @@
 import { showMessage, createElement } from "./utils.js";
-import { POST_URL, AUTH_TOKEN, POSTS_URL, COMMENTS_URL } from "./variables.js";
+import { POST_URL, AUTH_TOKEN, POSTS_URL, USERS_URL } from "./variables.js";
 
 const addPhoto = document.querySelector('#add-photo');
 const addFirstPost = document.querySelector('#add-first-post');
@@ -12,11 +12,7 @@ const postPublishButton = document.querySelector('#post-publish');
 const fileUpload = document.querySelector('#file-upload');
 const image = document.querySelector('#uploaded-photo');
 const photosContent = document.querySelector('.photos__content');
-const previewPostModal = document.querySelector('.preview-post-modal');
-const user = {  
-    name: faker.name.firstName(), 
-    surname: faker.name.lastName()
-}
+
 
 addPhoto.addEventListener('click', () => {
     addPostModal.classList.add('active');
@@ -67,7 +63,7 @@ postText.addEventListener('keydown', (e) => {
         const sumsCounter = Number(2000) - Number(postTextValue.length);
         textCounter.textContent = sumsCounter;
         postPublishButton.disabled = false;
-    } else if (postTextValue.trim() === '') {
+    } else if (postTextValue === '') {
         textValidate.textContent = 'Поле обязательно для заполнения';
         postPublishButton.disabled = true;
     } else if (postTextValue.length === 2000) {
@@ -76,7 +72,7 @@ postText.addEventListener('keydown', (e) => {
         postPublishButton.disabled = true;
     } else {
         textValidate.textContent = 'Данные введены неверно';
-        postText.style.outlineColor = 'var(--error)';
+        postText.classList.add('error-validate');
         postPublishButton.disabled = true;
     }
 })
@@ -88,12 +84,12 @@ postHashtags.addEventListener('keydown', (e) => {
     if (pattern.test(hashtags) && hashtags.length <= 200) {
         textValidateTags.textContent = 'Данные введены корректно';
         postPublishButton.disabled = false;
-    } else if (hashtags.trim() === ' ') {
+    } else if (hashtags === '') {
         textValidateTags.textContent = 'Поле обязательно для заполнения';
         postPublishButton.disabled = true;
     } else {
         textValidateTags.textContent = 'Данные введены неверно';
-        postHashtags.style.outlineColor = 'var(--error)';
+        postHashtags.classList.add('error-validate');
         postPublishButton.disabled = true;
     }
 })
@@ -182,46 +178,6 @@ const  getPostUsers = async () => {
         data.forEach((content) => {
             const elementHTML = createElement(content);
             photosContent.append(elementHTML);
-
-            const comments = content.comments;
-            const dataId = content.id;
-            const date = new Date(content.created_at);
-            const options = {day: 'numeric', month: 'long', hour: 'numeric', minute: 'numeric'};
-            const newDate = date.toLocaleDateString("ru", options);
-
-            comments.forEach((comment) => {
-                commentsContent.innerHTML = `
-                <div class="comments__item">
-                    <img
-                        class="comments__item-avatar"
-                        src="https://avatars.dicebear.com/api/avataaars/${(Math.random() + 1).toString(36).substring(7)}.svg"
-                        width="40"
-                        alt=""
-                    />
-                    <div class="comments__item-text">
-                        <h3 class="comments__item-nickname">${user.name}</h3>
-                        <p class="comments__item-comment">
-                            ${comment.text}
-                        </p>
-                        <span class="comments__item-time">${newDate}</span>
-                    </div>
-                </div>
-                `
-            })
-            elementHTML.addEventListener('click', () => {
-                deletePostUser(content);
-            });
-            countLikesPost(content);
-
-            commentsButton.addEventListener('click', () => {
-                const comment = postComment.value;
-                if (comment.trim() === '') {
-                    console.log('error');
-                } else {
-                    sendComment(comment, dataId, newDate);
-                }
-            });
-            countCommentsPost(content);
         })
 
         if (data.length === 0) {
@@ -239,129 +195,12 @@ const  getPostUsers = async () => {
 
 getPostUsers();
 
-// DELETE POST USER
-
-const deletePost = document.querySelector('#delete-post');
-const deletePostUser = (content) => {
-    deletePost.addEventListener('click', () => {
-        const { id } = content;
-
-        const response = fetch(`${POST_URL}${id}/`, {
-            method: 'DELETE',
-            headers: {
-                Authorization: AUTH_TOKEN
-            }
-        })
-        .then((data) => {
-            if (data.ok) {
-                showMessage('#alert-success');
-            }
-        })
-        .catch(() => {
-            showMessage('#alert-fail');
-        })
-        .finally(() => {
-            previewPostModal.classList.remove('active');
-            bodyOverlay.classList.remove('active');
-            document.body.classList.remove('with-overlay');
-        })
-        return response
-    })
-}
-
-
-// LIKE POST USER
-
-const likeButton = document.querySelector('.fa-heart');
-const countElement = document.querySelector('#like');
-const statisticsLikes = document.querySelector('.statistics__likes');
-let likes = 0;
-
-likeButton.addEventListener('click', () => {
-    likes++;
-    countElement.innerHTML = likes;
-    statisticsLikes.classList.add('liked');
-    getItemId();
-});
-
-const countLikesPost = (content) => {
-    const { likes } = content;
-    countElement.innerHTML = likes;
-};
-
-const updateCount = (itemId) => {
-    countElement.innerHTML = likes;
-  
-    fetch(`${POST_URL}${itemId}/like/`, {
-      method: 'POST',
-      headers: {
-        Authorization: AUTH_TOKEN
-      },
-      body: JSON.stringify({ likes }),
-    });
-};
-
-const getItemId = () => {
-    fetch(POSTS_URL, {
-        method: 'GET',
-        headers: {
-            Authorization: AUTH_TOKEN
-        }
-    })
-    .then((response) => response.json())
-    .then((data) => {
-        data.forEach((content) => {
-            const dataId = content.id;
-            updateCount(dataId);
-        })
-    })
-};
-
-
-// GET COMMENTS POST
-
-const commentsContent = document.querySelector('.comments__content'); 
-const commentsButton = document.querySelector('.comments-button');
-const postComment = document.querySelector('#post-comment');
-
-
-const countCommentsPost = (content) => {
-    const comment = document.querySelector('#comment');
-    const { comments } = content;
-    comment.textContent = comments.length;
-};
-
-const sendComment = (comment, id) => {
-    const data = {
-        text: comment,
-        post: id
-    }
-    const response = fetch(COMMENTS_URL, {
-      method: 'POST',
-      headers: {
-        Authorization: AUTH_TOKEN,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    })
-    .then(response => {
-      if (response.ok) {
-        postComment.value = '';
-      } else {
-        console.error('Error sending comment');
-      }
-    })
-    .catch(error => {
-      console.error(error);
-    })
-    return response
-};
 
 const filUploadAvatar = document.querySelector('#file-upload-avatar');
 const imageAvatar = document.querySelector('#profile-avatar');
 
 const getBioUser = () => {
-    const response = fetch('https://c-gallery.polinashneider.space/api/v1/users/me/', {
+    const response = fetch(`${USERS_URL}`, {
         method: 'GET',
         headers: {
             Authorization: AUTH_TOKEN
@@ -386,7 +225,7 @@ const createAvatarUser = () => {
         const formData = new FormData();
         formData.append("photo", filUploadAvatar.files[0]);
 
-        fetch('https://c-gallery.polinashneider.space/api/v1/users/me/', {
+        fetch(`${USERS_URL}`, {
             method: 'PATCH',
             body: formData,
             headers: {
