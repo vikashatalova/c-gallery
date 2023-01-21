@@ -7,7 +7,7 @@
 Для получения всех постов пользователя при загрузке страницы должен отправляться **GET-запрос** на адрес
 
 ```
-https://c-gallery.polinashneider.space/api/v1/posts/
+https://c-gallery.polinashneider.space/api/v1/users/me/posts
 ```
 
 Формат ответа ты можешь посмотреть в [Swagger](https://c-gallery.polinashneider.space/swagger/).
