@@ -60,14 +60,14 @@ postText.addEventListener('keydown', (e) => {
     
     if (pattern.test(postTextValue) && postTextValue.length <= count) {
         textValidate.textContent = 'Данные введены корректно';
-        const sumsCounter = Number(2000) - Number(postTextValue.length);
+        const sumsCounter = count - Number(postTextValue.length);
         textCounter.textContent = sumsCounter;
         postPublishButton.disabled = false;
     } else if (postTextValue === '') {
         textValidate.textContent = 'Поле обязательно для заполнения';
         postPublishButton.disabled = true;
     } else if (postTextValue.length === 2000) {
-        const sumsCounter = Number(2000) - Number(postTextValue.length);
+        const sumsCounter = count - Number(postTextValue.length);
         textCounter.textContent = `Вы ввели слишком много символов, введите на ${sumsCounter} меньше`;
         postPublishButton.disabled = true;
     } else {
