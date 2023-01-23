@@ -1,5 +1,6 @@
 import { showMessage, createElement } from "./utils.js";
 import { POST_URL, AUTH_TOKEN, POSTS_URL, USERS_URL } from "./variables.js";
+import { messageFail, messageSuccess } from "./utils.js";
 
 const addPhoto = document.querySelector('#add-photo');
 const addFirstPost = document.querySelector('#add-first-post');
@@ -96,21 +97,15 @@ postHashtags.addEventListener('keydown', (e) => {
 
 
 postPublishButton.addEventListener('click', () => {
-
     const formData = new FormData();
     formData.append("image", fileUpload.files[0]);
     formData.append("text", postText.value);
     formData.append("tags", postHashtags.value);
 
-
-    const inputsAddPublish = document.querySelectorAll('textarea');
-
-    for (let i = 0;  i < inputsAddPublish.length; i++) {
-        fileUpload.value = "";
-        postText.value = "";
-        postHashtags.value = "";
-        image.src = "";
-    };
+    fileUpload.value = "";
+    postText.value = "";
+    postHashtags.value = "";
+    image.src = "";
 
     const response = fetch(POST_URL, {
         method: 'POST',
@@ -126,12 +121,10 @@ postPublishButton.addEventListener('click', () => {
             document.body.classList.remove('with-overlay');
             getPostUsers();
 
-            showMessage('#alert-success');
+            showMessage(messageSuccess, 'Данные сохранились', 'Ваши данные сохранены');
         }
     })
-    .catch(() => {
-        showMessage('#alert-fail');
-    })
+    .catch(() => showMessage(messageFail, 'Ошибка', 'Не удалось отправить данные'))
     .finally(() => {
         addPostModalStepOne.classList.remove('hidden');
         addPostModalStepTwo.classList.add('hidden');
@@ -141,13 +134,9 @@ postPublishButton.addEventListener('click', () => {
 });
 
 const toggleLoader = () => {
-    const loader = document.querySelector('#loader');
-    const isHidden = loader.hasAttribute('hidden');
-    if (isHidden) {
-        loader.removeAttribute('hidden');
-    } else {
-        loader.setAttribute('hidden', '');
-    }
+    const loader = document.querySelector('#loader'); 
+    loader.classList.remove('hidden');
+    loader.classList.add('hidden');
 }
 
 // GET POST  USERS
@@ -184,17 +173,11 @@ const  getPostUsers = async () => {
             emptyContent.classList.remove('hidden'); 
         }
     })
-    .catch(() => {
-        showMessage('#alert-fail');
-    })
-    .finally(() => {
-        toggleLoader();
-    })
+    .catch(() => showMessage(messageFail, 'Ошибка', 'Повторите попытку снова'))
+    .finally(() => toggleLoader())
     return response
 }
-
 getPostUsers();
-
 
 const filUploadAvatar = document.querySelector('#file-upload-avatar');
 const imageAvatar = document.querySelector('#profile-avatar');
@@ -210,9 +193,7 @@ const getBioUser = () => {
     .then((data) => {
         imageAvatar.src = data.photo;
     })
-    .catch(() => {
-        showMessage('#alert-fail');
-    })
+    .catch(() => showMessage(messageFail, 'Ошибка', 'Повторите попытку снова'))
     return response
 }
 getBioUser();
@@ -234,14 +215,12 @@ const createAvatarUser = () => {
         })
         .then((res) => {
             if (res.ok) {
-                showMessage('#alert-success');
+                showMessage(messageSuccess, 'Обновлено', 'Ваши данные обновились');
             } else {
-                showMessage('#alert-fail');
+                showMessage(messageSuccess, 'Ошибка', 'Ваши данные не обновились');
             }
         })
-        .catch(() => {
-            showMessage('#alert-fail');
-        })
+        .catch(() => showMessage(messageSuccess, 'Ошибка', 'Ваши данные не обновились'))
     });
 }
 createAvatarUser();

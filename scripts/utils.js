@@ -5,21 +5,40 @@ const previewPostModal = document.querySelector('.preview-post-modal');
 const bodyOverlay = document.querySelector('.body-overlay');
 const staticsLikesSpan = document.querySelector('#like');
 const btnLike = document.querySelector('.fa-heart');
+const messageFail = document.querySelector('#alert-fail');
+const messageSuccess = document.querySelector('#alert-success');
+export {
+  messageFail,
+  messageSuccess
+}
 
-export const showMessage = (message) => {
-  const showMessage = document.querySelector(message);
-  const clon = showMessage.content.firstElementChild.cloneNode(true);
-  document.body.appendChild(clon);
+export const showMessage = (type, header, message) => {
+  const messageFail = type;
+
+  const headerMessage = messageFail.content.querySelector('h4');
+  headerMessage.textContent = header;
+
+  const textMessage = messageFail.content.querySelector('p');
+  textMessage.textContent = message;
+
+  const clonMessage = messageFail.content.firstElementChild.cloneNode(true);
+  document.body.append(clonMessage);
 
   const timer = setTimeout(() => {
-    clon.remove();
+    clonMessage.remove();
   }, 2000);
   return timer
-};
+}
+
+const closePreviewPostModal = () => {
+  previewPostModal.classList.remove('active');
+  bodyOverlay.classList.remove('active');
+  document.body.classList.remove('with-overlay');
+}
 
 export const createElement = (content) => {
   const {image, text, tags, created_at, likes, comments, id} = content;
-  const staticsLikesSpan = document.querySelector('#like');
+  const randomAvatar = `https://avatars.dicebear.com/api/avataaars/${(Math.random() + 1)}.svg`;
   const user = {  
     name: faker.name.firstName()
   }
@@ -68,8 +87,9 @@ export const createElement = (content) => {
     commentsButton.addEventListener('click', () => {
       const comment = postComment.value;
       if (comment === '') {
-        showMessage('#alert-fail');
+        commentsButton.disabled = true;
       } else {
+        commentsButton.disabled = false;
         sendComment(comment, id);
       }
     });
@@ -78,9 +98,9 @@ export const createElement = (content) => {
     commentsContent.dataset.postId = id;
     
     comments.forEach((comment) => {
-      const dateCommnets = new Date(comment.created_at);
+      const dateCommnents = new Date(comment.created_at);
       const optionsComments = {day: 'numeric', month: 'long', hour: 'numeric', minute: 'numeric'};
-      const newDateComments = dateCommnets.toLocaleDateString("ru", optionsComments);
+      const newDateComments = dateCommnents.toLocaleDateString("ru", optionsComments);
 
       const commentsItem = document.createElement('div');
       commentsItem.className = 'comments__item';
@@ -88,7 +108,7 @@ export const createElement = (content) => {
 
       const commentsAvatar = document.createElement('img');
       commentsAvatar.className = 'comments__item-avatar';
-      commentsAvatar.src = `https://avatars.dicebear.com/api/avataaars/${(Math.random() + 1)}.svg`;
+      commentsAvatar.src = randomAvatar;
       commentsAvatar.width = 40;      
 
       const commentsText = document.createElement('div');
@@ -117,11 +137,7 @@ export const createElement = (content) => {
       commentsContent.append(commentsItem);
     });
 
-    bodyOverlay.addEventListener('click', () => {
-      previewPostModal.classList.remove('active');
-      bodyOverlay.classList.remove('active');
-      document.body.classList.remove('with-overlay');
-    });
+    bodyOverlay.addEventListener('click', () => closePreviewPostModal());
   })
   return post
 };
@@ -138,16 +154,14 @@ const deletePostUser = (id) => {
     })
     .then((data) => {
       if (data.ok) {
-        showMessage('#alert-success');
+        showMessage(messageSuccess, 'Удалено', 'Данные успешно удалены');
       }
     })
     .catch(() => {
-      showMessage('#alert-fail');
+      showMessage(messageFail, 'Ошибка', 'Повторите попытку снова');
     })
     .finally(() => {
-      previewPostModal.classList.remove('active');
-      bodyOverlay.classList.remove('active');
-      document.body.classList.remove('with-overlay');
+      closePreviewPostModal();
     })
     return response
   })
@@ -177,12 +191,12 @@ function sendDataToServer(likes, postId) {
   })
   .then((res) => {
     if (res.ok) {
-      showMessage('#alert-success');
+      showMessage(messageSuccess, 'Успешно', 'Данные отправлены');
     } else {
-      showMessage('#alert-fail');
+      showMessage(messageFail, 'Ошибка', 'Повторите попытку снова');
     }
   })
-  .catch(() => showMessage('#alert-fail'))
+  .catch(() => showMessage(messageFail, 'Ошибка', 'Повторите попытку снова'))
 }
 
 // SEND COMMENT USER
@@ -207,15 +221,12 @@ const sendComment = (comment, id) => {
   .then(response => {
     if (response.ok) {
       postComment.value = '';
-      showMessage('#alert-success');
+      showMessage(messageSuccess, 'Успешно', 'Комментарий добавлен');
     } else {
-      showMessage('#alert-fail');
+      showMessage(messageFail, 'Ошибка', 'Повторите попытку снова')
     }
   })
-  .catch(() => {
-    showMessage('#alert-fail');
-  })
+  .catch(() => showMessage(messageFail, 'Ошибка', 'Повторите попытку снова'))
   return response
 };
-
 
