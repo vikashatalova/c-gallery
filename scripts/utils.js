@@ -1,4 +1,4 @@
-import { POST_URL, AUTH_TOKEN, COMMENTS_URL } from "./variables.js";
+import { POST_URL, AUTH_TOKEN, COMMENTS_URL, RANDOM_AVATAR } from "./variables.js";
 
 const deletePost = document.querySelector('#delete-post');
 const previewPostModal = document.querySelector('.preview-post-modal');
@@ -7,12 +7,14 @@ const staticsLikesSpan = document.querySelector('#like');
 const btnLike = document.querySelector('.fa-heart');
 const messageFail = document.querySelector('#alert-fail');
 const messageSuccess = document.querySelector('#alert-success');
+const commentsContent = document.querySelector('.comments__content');
 export {
   messageFail,
   messageSuccess
 }
 
 export const showMessage = (type, header, message) => {
+  const COUNT = 2000;
   const messageFail = type;
 
   const headerMessage = messageFail.content.querySelector('h4');
@@ -24,31 +26,37 @@ export const showMessage = (type, header, message) => {
   const clonMessage = messageFail.content.firstElementChild.cloneNode(true);
   document.body.append(clonMessage);
 
-  const timer = setTimeout(() => {
+  setTimeout(() => {
     clonMessage.remove();
-  }, 2000);
-  return timer
+  }, COUNT);
 }
 
 const closePreviewPostModal = () => {
   previewPostModal.classList.remove('active');
   bodyOverlay.classList.remove('active');
   document.body.classList.remove('with-overlay');
+
+  commentsContent.innerHTML = "";
 }
 
 export const createElement = (content) => {
   const {image, text, tags, created_at, likes, comments, id} = content;
-  const randomAvatar = `https://avatars.dicebear.com/api/avataaars/${(Math.random() + 1)}.svg`;
   const user = {  
     name: faker.name.firstName()
   }
  
   const postTempalete = document.querySelector('#post-template');
+  const overlayLikes = postTempalete.content.querySelector('.likes span');
+  overlayLikes.textContent = likes;
+  const overlayComments = postTempalete.content.querySelector('.comments span');
+  overlayComments.textContent = comments.length;
   const clonPost = postTempalete.content.firstElementChild.cloneNode(true);
+
   const imgElement = document.createElement('img');
   imgElement.src = image;
   const post = document.createElement('div');
-  post.className = 'post';
+
+  post.classList = 'post';
   post.append(imgElement);
   post.append(clonPost);
 
@@ -94,7 +102,6 @@ export const createElement = (content) => {
       }
     });
 
-    const commentsContent = document.querySelector('.comments__content');
     commentsContent.dataset.postId = id;
     
     comments.forEach((comment) => {
@@ -103,27 +110,27 @@ export const createElement = (content) => {
       const newDateComments = dateCommnents.toLocaleDateString("ru", optionsComments);
 
       const commentsItem = document.createElement('div');
-      commentsItem.className = 'comments__item';
+      commentsItem.classList = 'comments__item';
       commentsItem.dataset.postId = id;
 
       const commentsAvatar = document.createElement('img');
-      commentsAvatar.className = 'comments__item-avatar';
-      commentsAvatar.src = randomAvatar;
+      commentsAvatar.classList = 'comments__item-avatar';
+      commentsAvatar.src = RANDOM_AVATAR;
       commentsAvatar.width = 40;      
 
       const commentsText = document.createElement('div');
-      commentsText.className = 'comments__item-text';
+      commentsText.classList = 'comments__item-text';
 
       const commentNickname = document.createElement('h3');
-      commentNickname.className = 'comments__item-nickname';
+      commentNickname.classList = 'comments__item-nickname';
       commentNickname.innerHTML = user.name;
 
       const newComment = document.createElement('p');
-      newComment.className = 'comments__item-comment';
+      newComment.classList = 'comments__item-comment';
       newComment.innerText = comment.text;
       
       const commentTime = document.createElement('span');
-      commentTime.className = 'comments__item-time';
+      commentTime.classList = 'comments__item-time';
       commentTime.innerText = newDateComments;
 
       commentsText.append(commentNickname);
@@ -133,7 +140,6 @@ export const createElement = (content) => {
       commentsItem.append(commentsAvatar);
       commentsItem.append(commentsText);
 
-      commentsContent.innerHTML = "";
       commentsContent.append(commentsItem);
     });
 
@@ -146,7 +152,7 @@ export const createElement = (content) => {
 
 const deletePostUser = (id) => {
   deletePost.addEventListener('click', () => {
-    const response = fetch(`${POST_URL}${id}/`, {
+    fetch(`${POST_URL}${id}/`, {
       method: 'DELETE',
       headers: {
         Authorization: AUTH_TOKEN
@@ -163,7 +169,6 @@ const deletePostUser = (id) => {
     .finally(() => {
       closePreviewPostModal();
     })
-    return response
   })
 }
 
@@ -210,7 +215,7 @@ const sendComment = (comment, id) => {
     text: comment,
     post: id
   }
-  const response = fetch(COMMENTS_URL, {
+  fetch(COMMENTS_URL, {
     method: 'POST',
     headers: {
       Authorization: AUTH_TOKEN,
@@ -227,6 +232,7 @@ const sendComment = (comment, id) => {
     }
   })
   .catch(() => showMessage(messageFail, 'Ошибка', 'Повторите попытку снова'))
-  return response
 };
+
+
 

@@ -35,7 +35,6 @@ bodyOverlay.addEventListener('click', () => {
 
 
 const uploadPhoto = () => {
-
     fileUpload.addEventListener('change', () => {
         image.src = URL.createObjectURL(fileUpload.files[0]);
         image.style.display = "block";
@@ -45,7 +44,6 @@ const uploadPhoto = () => {
         modalFooter.classList.remove('hidden');
     });
 };
-
 uploadPhoto();
 
 const postText = document.querySelector('#post-text');
@@ -55,20 +53,20 @@ const textValidate = document.querySelector('.text-validate');
 const textValidateTags = document.querySelector('.text-validateTags');
 
 postText.addEventListener('keydown', (e) => {
-    const postTextValue = e.target.value;
-    const pattern = /^([A-Za-z0-9_-]+)$/;
-    const count = 2000;
+    const POST_TEXT_VALUE = e.target.value;
+    const PATTERN = /^([A-Za-z0-9_-]+)$/;
+    const COUNT = 2000;
     
-    if (pattern.test(postTextValue) && postTextValue.length <= count) {
+    if (PATTERN.test(POST_TEXT_VALUE) && POST_TEXT_VALUE.length <= COUNT) {
         textValidate.textContent = 'Данные введены корректно';
-        const sumsCounter = count - Number(postTextValue.length);
+        const sumsCounter = COUNT - POST_TEXT_VALUE.length;
         textCounter.textContent = sumsCounter;
         postPublishButton.disabled = false;
-    } else if (postTextValue === '') {
+    } else if (POST_TEXT_VALUE === '') {
         textValidate.textContent = 'Поле обязательно для заполнения';
         postPublishButton.disabled = true;
-    } else if (postTextValue.length === 2000) {
-        const sumsCounter = count - Number(postTextValue.length);
+    } else if (POST_TEXT_VALUE.length === COUNT) {
+        const sumsCounter = COUNT - POST_TEXT_VALUE.length;
         textCounter.textContent = `Вы ввели слишком много символов, введите на ${sumsCounter} меньше`;
         postPublishButton.disabled = true;
     } else {
@@ -79,13 +77,14 @@ postText.addEventListener('keydown', (e) => {
 })
 
 postHashtags.addEventListener('keydown', (e) => {
-    const hashtags = e.target.value;
-    const pattern = /^#([A-Za-z0-9_-]+)$/;
+    const HASHTAGS = e.target.value;
+    const PATTERN = /^#([A-Za-z0-9_-]+)$/;
+    const COUNT = 200;
 
-    if (pattern.test(hashtags) && hashtags.length <= 200) {
+    if (PATTERN.test(HASHTAGS) && HASHTAGS.length <= COUNT) {
         textValidateTags.textContent = 'Данные введены корректно';
         postPublishButton.disabled = false;
-    } else if (hashtags === '') {
+    } else if (HASHTAGS === '') {
         textValidateTags.textContent = 'Поле обязательно для заполнения';
         postPublishButton.disabled = true;
     } else {
@@ -94,7 +93,6 @@ postHashtags.addEventListener('keydown', (e) => {
         postPublishButton.disabled = true;
     }
 })
-
 
 postPublishButton.addEventListener('click', () => {
     const formData = new FormData();
@@ -133,18 +131,24 @@ postPublishButton.addEventListener('click', () => {
     return response 
 });
 
-const toggleLoader = () => {
+// LOADER
+
+const showLoader = () => {
     const loader = document.querySelector('#loader'); 
     loader.classList.remove('hidden');
+};
+
+const hideLoader = () => {
+    const loader = document.querySelector('#loader'); 
     loader.classList.add('hidden');
-}
+};
 
 // GET POST  USERS
 
 const  getPostUsers = async () => {
     const emptyContent = document.querySelector('.empty-content');
     const photoCount = document.querySelector('#photo-count');
-    toggleLoader();
+    showLoader();
     
     const response = await fetch(POSTS_URL, {
         method: 'GET',
@@ -174,7 +178,7 @@ const  getPostUsers = async () => {
         }
     })
     .catch(() => showMessage(messageFail, 'Ошибка', 'Повторите попытку снова'))
-    .finally(() => toggleLoader())
+    .finally(() => hideLoader())
     return response
 }
 getPostUsers();
