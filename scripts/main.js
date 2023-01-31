@@ -36,12 +36,20 @@ bodyOverlay.addEventListener('click', () => {
 
 const uploadPhoto = () => {
     fileUpload.addEventListener('change', () => {
-        image.src = URL.createObjectURL(fileUpload.files[0]);
-        image.style.display = "block";
+        if (fileUpload.files[0].size > 1048576) {
+            addPostModal.classList.remove('active');
+            bodyOverlay.classList.remove('active');
+            document.body.classList.remove('with-overlay');
 
-        addPostModalStepOne.classList.add('hidden');
-        addPostModalStepTwo.classList.remove('hidden');
-        modalFooter.classList.remove('hidden');
+            showMessage(messageFail, 'Oops', 'Ваше фото превышает допустимые размеры');
+        } else {
+            image.src = URL.createObjectURL(fileUpload.files[0]);
+            image.style.display = "block";
+
+            addPostModalStepOne.classList.add('hidden');
+            addPostModalStepTwo.classList.remove('hidden');
+            modalFooter.classList.remove('hidden');
+        }
     });
 };
 uploadPhoto();
@@ -54,17 +62,15 @@ const textValidateTags = document.querySelector('.text-validateTags');
 
 postText.addEventListener('keydown', (e) => {
     const POST_TEXT_VALUE = e.target.value;
-    const PATTERN = /^([A-Za-z0-9_-]+)$/;
+    const PATTERN = /^[\w\s]+$/;
     const COUNT = 2000;
-    
-    if (PATTERN.test(POST_TEXT_VALUE) && POST_TEXT_VALUE.length <= COUNT) {
-        textValidate.textContent = 'Данные введены корректно';
+
+    if (!PATTERN.test(POST_TEXT_VALUE)) {
+        postPublishButton.disabled = false;
+    } else if (POST_TEXT_VALUE.length === 0 || POST_TEXT_VALUE.length <= COUNT) {
         const sumsCounter = COUNT - POST_TEXT_VALUE.length;
         textCounter.textContent = sumsCounter;
-        postPublishButton.disabled = false;
-    } else if (POST_TEXT_VALUE === '') {
-        textValidate.textContent = 'Поле обязательно для заполнения';
-        postPublishButton.disabled = true;
+        postPublishButton.disabled = false;    
     } else if (POST_TEXT_VALUE.length === COUNT) {
         const sumsCounter = COUNT - POST_TEXT_VALUE.length;
         textCounter.textContent = `Вы ввели слишком много символов, введите на ${sumsCounter} меньше`;
@@ -74,25 +80,23 @@ postText.addEventListener('keydown', (e) => {
         postText.classList.add('error-validate');
         postPublishButton.disabled = true;
     }
-})
+});
 
 postHashtags.addEventListener('keydown', (e) => {
-    const HASHTAGS = e.target.value;
-    const PATTERN = /^#([A-Za-z0-9_-]+)$/;
+    let HASHTAGS = e.target.value;
+    const PATTERN = /^#\w+$/;
     const COUNT = 200;
-
-    if (PATTERN.test(HASHTAGS) && HASHTAGS.length <= COUNT) {
-        textValidateTags.textContent = 'Данные введены корректно';
+      
+    if (!PATTERN.test(HASHTAGS)) {
         postPublishButton.disabled = false;
-    } else if (HASHTAGS === '') {
-        textValidateTags.textContent = 'Поле обязательно для заполнения';
-        postPublishButton.disabled = true;
+    } else if (HASHTAGS.length <= COUNT && HASHTAGS.length > 0) {
+        postPublishButton.disabled = false;
     } else {
         textValidateTags.textContent = 'Данные введены неверно';
         postHashtags.classList.add('error-validate');
         postPublishButton.disabled = true;
     }
-})
+});
 
 postPublishButton.addEventListener('click', () => {
     const formData = new FormData();
@@ -100,11 +104,9 @@ postPublishButton.addEventListener('click', () => {
     formData.append("text", postText.value);
     formData.append("tags", postHashtags.value);
 
-    fileUpload.value = "";
     postText.value = "";
     postHashtags.value = "";
-    image.src = "";
-
+    
     const response = fetch(POST_URL, {
         method: 'POST',
         headers: {
@@ -118,7 +120,7 @@ postPublishButton.addEventListener('click', () => {
             bodyOverlay.classList.remove('active');
             document.body.classList.remove('with-overlay');
             getPostUsers();
-
+            clearPublish();
             showMessage(messageSuccess, 'Данные сохранились', 'Ваши данные сохранены');
         }
     })
@@ -130,6 +132,13 @@ postPublishButton.addEventListener('click', () => {
     })
     return response 
 });
+
+const clearPublish = () => {
+    fileUpload.value = "";
+    postText.value = "";
+    postHashtags.value = "";
+    image.src = "";
+}
 
 // LOADER
 
@@ -145,7 +154,7 @@ const hideLoader = () => {
 
 // GET POST  USERS
 
-const  getPostUsers = async () => {
+export const  getPostUsers = async () => {
     const emptyContent = document.querySelector('.empty-content');
     const photoCount = document.querySelector('#photo-count');
     showLoader();

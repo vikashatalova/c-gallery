@@ -1,13 +1,18 @@
-import { POST_URL, AUTH_TOKEN, COMMENTS_URL, RANDOM_AVATAR } from "./variables.js";
+import { getPostUsers } from "./main.js";
+import { POST_URL, AUTH_TOKEN, COMMENTS_URL, RANDOM_AVATAR, USERS_URL, POSTS_URL } from "./variables.js";
 
 const deletePost = document.querySelector('#delete-post');
 const previewPostModal = document.querySelector('.preview-post-modal');
 const bodyOverlay = document.querySelector('.body-overlay');
+const statickLike = document.querySelector('.statistics__likes');
 const staticsLikesSpan = document.querySelector('#like');
 const btnLike = document.querySelector('.fa-heart');
 const messageFail = document.querySelector('#alert-fail');
 const messageSuccess = document.querySelector('#alert-success');
 const commentsContent = document.querySelector('.comments__content');
+const user = {  
+  name: faker.name.firstName()
+}
 export {
   messageFail,
   messageSuccess
@@ -41,9 +46,6 @@ const closePreviewPostModal = () => {
 
 export const createElement = (content) => {
   const {image, text, tags, created_at, likes, comments, id} = content;
-  const user = {  
-    name: faker.name.firstName()
-  }
  
   const postTempalete = document.querySelector('#post-template');
   const overlayLikes = postTempalete.content.querySelector('.likes span');
@@ -85,6 +87,12 @@ export const createElement = (content) => {
     staticsLikesSpan.textContent = likes;
     staticsLikesSpan.dataset.postId = id;
 
+    if (staticsLikesSpan.textContent > 0) {
+      statickLike.classList.add('liked')
+    } else {
+      statickLike.classList.remove('liked')
+    }
+
     staticsComment.textContent = comments.length;
     staticsComment.dataset.postId = id;
     
@@ -105,42 +113,8 @@ export const createElement = (content) => {
     commentsContent.dataset.postId = id;
     
     comments.forEach((comment) => {
-      const dateCommnents = new Date(comment.created_at);
-      const optionsComments = {day: 'numeric', month: 'long', hour: 'numeric', minute: 'numeric'};
-      const newDateComments = dateCommnents.toLocaleDateString("ru", optionsComments);
-
-      const commentsItem = document.createElement('div');
-      commentsItem.classList = 'comments__item';
-      commentsItem.dataset.postId = id;
-
-      const commentsAvatar = document.createElement('img');
-      commentsAvatar.classList = 'comments__item-avatar';
-      commentsAvatar.src = RANDOM_AVATAR;
-      commentsAvatar.width = 40;      
-
-      const commentsText = document.createElement('div');
-      commentsText.classList = 'comments__item-text';
-
-      const commentNickname = document.createElement('h3');
-      commentNickname.classList = 'comments__item-nickname';
-      commentNickname.innerHTML = user.name;
-
-      const newComment = document.createElement('p');
-      newComment.classList = 'comments__item-comment';
-      newComment.innerText = comment.text;
-      
-      const commentTime = document.createElement('span');
-      commentTime.classList = 'comments__item-time';
-      commentTime.innerText = newDateComments;
-
-      commentsText.append(commentNickname);
-      commentsText.append(newComment);
-      commentsText.append(commentTime);
-
-      commentsItem.append(commentsAvatar);
-      commentsItem.append(commentsText);
-
-      commentsContent.append(commentsItem);
+      const dateComments = getNewDate(comment.created_at);
+      createNewComment(id, RANDOM_AVATAR, user.name, comment.text, dateComments);
     });
 
     bodyOverlay.addEventListener('click', () => closePreviewPostModal());
@@ -161,6 +135,7 @@ const deletePostUser = (id) => {
     .then((data) => {
       if (data.ok) {
         showMessage(messageSuccess, 'Удалено', 'Данные успешно удалены');
+        getPostUsers(id);
       }
     })
     .catch(() => {
@@ -176,15 +151,16 @@ const deletePostUser = (id) => {
 
 function handleClick(postId) {
   if (staticsLikesSpan.classList.contains('liked')) {
-    return
-  }
-
+    return 
+  } 
+  console.log(staticsLikesSpan.classList.contains('liked'));
   staticsLikesSpan.textContent = Number(staticsLikesSpan.textContent) + 1;
   staticsLikesSpan.dataset.postId = postId;
   staticsLikesSpan.classList.add('liked');
 
   sendDataToServer(staticsLikesSpan.textContent, postId);
 }
+
 
 function sendDataToServer(likes, postId) {
   fetch(`${POST_URL}${postId}/like/`, {
@@ -200,6 +176,11 @@ function sendDataToServer(likes, postId) {
     } else {
       showMessage(messageFail, 'Ошибка', 'Повторите попытку снова');
     }
+
+    return res.json()
+  })
+  .then((data) => {
+    console.log(data);
   })
   .catch(() => showMessage(messageFail, 'Ошибка', 'Повторите попытку снова'))
 }
@@ -211,6 +192,8 @@ const commentsButton = document.querySelector('.comments-button');
 const postComment = document.querySelector('#post-comment');
 
 const sendComment = (comment, id) => {
+  console.log(comment.length);
+  console.log(id);
   const data = {
     text: comment,
     post: id
@@ -224,15 +207,65 @@ const sendComment = (comment, id) => {
     body: JSON.stringify(data)
   })
   .then(response => {
-    if (response.ok) {
-      postComment.value = '';
+    if (response.status === 201) {
       showMessage(messageSuccess, 'Успешно', 'Комментарий добавлен');
     } else {
-      showMessage(messageFail, 'Ошибка', 'Повторите попытку снова')
+      showMessage(messageFail, 'Ошибка', 'Повторите попытку снова');
     }
+    return response.json();
+  })
+  .then((data) => {
+    const dateComments = getNewDate(data.created_at);
+    createNewComment(data.post, RANDOM_AVATAR, user.name, data.text, dateComments);
+    postComment.value = '';
   })
   .catch(() => showMessage(messageFail, 'Ошибка', 'Повторите попытку снова'))
 };
+
+const createNewComment = (id, avatar, userName, commentText, date) => {
+  const commentsItem = document.createElement('div');
+  commentsItem.classList = 'comments__item';
+  commentsItem.dataset.postId = id;
+
+  const commentsAvatar = document.createElement('img');
+  commentsAvatar.classList = 'comments__item-avatar';
+  commentsAvatar.src = avatar;
+  commentsAvatar.width = 40;      
+
+  const commentsText = document.createElement('div');
+  commentsText.classList = 'comments__item-text';
+
+  const commentNickname = document.createElement('h3');
+  commentNickname.classList = 'comments__item-nickname';
+  commentNickname.textContent = userName;
+
+  const newComment = document.createElement('p');
+  newComment.classList = 'comments__item-comment';
+  newComment.textContent = commentText;
+      
+  const commentTime = document.createElement('span');
+  commentTime.classList = 'comments__item-time';
+  commentTime.textContent = date;
+
+  commentsText.append(commentNickname);
+  commentsText.append(newComment);
+  commentsText.append(commentTime);
+
+  commentsItem.append(commentsAvatar);
+  commentsItem.append(commentsText);
+
+  commentsContent.append(commentsItem);
+}
+
+const getNewDate = (date) => {
+  const dateCommnents = new Date(date);
+  const optionsComments = {day: 'numeric', month: 'long', hour: 'numeric', minute: 'numeric'};
+  const newDateComments = dateCommnents.toLocaleDateString("ru", optionsComments);
+
+  return newDateComments
+}
+
+
 
 
 
